@@ -1,0 +1,88 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\twakj\\source\\repos\\jacosr\\treebase\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A08F391E-2070-4DE8-87D9-CED3E0A05AE9}|TestProject.csproj|c:\\users\\twakj\\source\\repos\\jacosr\\treebase\\business\\imetadatastorage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A08F391E-2070-4DE8-87D9-CED3E0A05AE9}|TestProject.csproj|solutionrelative:business\\imetadatastorage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A08F391E-2070-4DE8-87D9-CED3E0A05AE9}|TestProject.csproj|c:\\users\\twakj\\source\\repos\\jacosr\\treebase\\business\\ifindable.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A08F391E-2070-4DE8-87D9-CED3E0A05AE9}|TestProject.csproj|solutionrelative:business\\ifindable.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A08F391E-2070-4DE8-87D9-CED3E0A05AE9}|TestProject.csproj|c:\\users\\twakj\\source\\repos\\jacosr\\treebase\\business\\istorage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A08F391E-2070-4DE8-87D9-CED3E0A05AE9}|TestProject.csproj|solutionrelative:business\\istorage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A08F391E-2070-4DE8-87D9-CED3E0A05AE9}|TestProject.csproj|c:\\users\\twakj\\source\\repos\\jacosr\\treebase\\business\\isearchengine.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A08F391E-2070-4DE8-87D9-CED3E0A05AE9}|TestProject.csproj|solutionrelative:business\\isearchengine.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ISearchEngine.cs",
+              "DocumentMoniker": "C:\\Users\\twakj\\source\\repos\\jacosr\\treebase\\Business\\ISearchEngine.cs",
+              "RelativeDocumentMoniker": "Business\\ISearchEngine.cs",
+              "ToolTip": "C:\\Users\\twakj\\source\\repos\\jacosr\\treebase\\Business\\ISearchEngine.cs",
+              "RelativeToolTip": "Business\\ISearchEngine.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAABVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-13T18:11:54.975Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "IStorage.cs",
+              "DocumentMoniker": "C:\\Users\\twakj\\source\\repos\\jacosr\\treebase\\Business\\IStorage.cs",
+              "RelativeDocumentMoniker": "Business\\IStorage.cs",
+              "ToolTip": "C:\\Users\\twakj\\source\\repos\\jacosr\\treebase\\Business\\IStorage.cs",
+              "RelativeToolTip": "Business\\IStorage.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAA0AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-13T18:07:00.052Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "IMetadataStorage.cs",
+              "DocumentMoniker": "C:\\Users\\twakj\\source\\repos\\jacosr\\treebase\\Business\\IMetadataStorage.cs",
+              "RelativeDocumentMoniker": "Business\\IMetadataStorage.cs",
+              "ToolTip": "C:\\Users\\twakj\\source\\repos\\jacosr\\treebase\\Business\\IMetadataStorage.cs",
+              "RelativeToolTip": "Business\\IMetadataStorage.cs",
+              "ViewState": "AgIAADQAAAAAAAAAAAAAwDoAAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-13T18:07:38.164Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "IFindable.cs",
+              "DocumentMoniker": "C:\\Users\\twakj\\source\\repos\\jacosr\\treebase\\Business\\IFindable.cs",
+              "RelativeDocumentMoniker": "Business\\IFindable.cs",
+              "ToolTip": "C:\\Users\\twakj\\source\\repos\\jacosr\\treebase\\Business\\IFindable.cs",
+              "RelativeToolTip": "Business\\IFindable.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-13T18:05:50.482Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
