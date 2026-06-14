@@ -87,5 +87,19 @@ namespace TestProject.Business
         /// <param name="newItem">The item to be saved. Cannot be <see langword="null"/>.</param>
         /// <returns>A task that represents the asynchronous save operation.</returns>
         Task Save(T newItem);
+
+
+        /// <summary>
+        /// Collects metadata for all items in the storage. This method retrieves metadata information for all items currently stored,
+        /// which can be used for various purposes such as indexing, searching, or displaying item information
+        /// </summary>
+        /// <returns>A task that represents the asynchronous metadata collection operation.
+        /// This function is called to initialize the metadata for all items in the storage when the application starts and there is 
+        /// no existing metadata available, or if the metadata needs to be refreshed.  It should return a collection of all items in 
+        /// the storage, with their metadata (e.g. id, path, name) filled in.  This allows the search engine to build its indexes based 
+        /// on the metadata of all items in the storage.</returns>
+        /// </returns>
+        /// <returns></returns>
+        Task<IEnumerable<T>> CollectMetadata();
     }
 }

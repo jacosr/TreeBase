@@ -38,6 +38,14 @@ namespace TestProject.Business
             _nameIndex.Remove(id);
         }
 
+        public async Task BuildIndexes()
+        {
+            foreach (var item in await Metadata.GetAll())
+            {
+                await Add(item.Id, item.Path, item.Name);
+            }
+        }
+
         public async Task<IEnumerable<FileSystemItem>> Find(string path, string name)
         {
             IEnumerable<int>? ids = null;

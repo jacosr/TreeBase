@@ -52,5 +52,16 @@
         /// <param name="name">The name of the item to add</param>
         /// <returns></returns>
         Task Add(int id, string path, string name);
+
+
+        /// <summary>
+        /// Builds the indexes used by the search engine to efficiently find items based on their path and name. 
+        /// This method should be called after all items have been added to the metadata storage to Add each item of 
+        /// metadata to the search engine.  It will read all metadata from the metadata storage and adds it to the search engine.  
+        /// It should be called at system start up to initialize the search engine with the existing metadata.  It can also be 
+        /// called at other times to rebuild the indexes if necessary.
+        /// </summary>
+        /// <returns></returns>
+        Task BuildIndexes();
     }
 }

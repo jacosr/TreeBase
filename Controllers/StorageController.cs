@@ -52,6 +52,36 @@ namespace TestProject.Controllers
         }
 
         /// <summary>
+        /// Retrieves the direct children of the directory with the given identifier.
+        /// </summary>
+        [HttpGet("{id}/children")]
+        public async Task<ActionResult<IEnumerable<FileSystemEntry>>> GetChildren(int id)
+        {
+            var item = await _storage.Get(id);
+            if (item == null || !item.IsDirectory)
+            {
+                return NotFound();
+            }
+
+            return Ok(await _storage.GetChildren(id));
+        }
+
+        /// <summary>
+        /// Retrieves a single item together with its file count (if it is a directory).
+        /// </summary>
+        [HttpGet("{id}/entry")]
+        public async Task<ActionResult<FileSystemEntry>> GetEntry(int id)
+        {
+            var entry = await _storage.GetEntry(id);
+            if (entry == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(entry);
+        }
+
+        /// <summary>
         /// Downloads the content of the file with the given identifier.
         /// </summary>
         [HttpGet("{id}/content")]

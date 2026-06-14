@@ -1,10 +1,63 @@
-﻿<!DOCTYPE html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TreeBase File Explorer</title>
+    <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-    Hello World!
+    <!-- Icon sprite, shared by the tree and the file list -->
+    <svg class="icon-sprite">
+        <symbol id="icon-folder" viewBox="0 0 24 24">
+            <path fill="#f6c453" stroke="#d9a429" stroke-width="0.5"
+                  d="M2 5.5C2 4.67 2.67 4 3.5 4h5l1.5 2H20.5c.83 0 1.5.67 1.5 1.5v11c0 .83-.67 1.5-1.5 1.5h-17C2.67 20 2 19.33 2 18.5v-13z" />
+        </symbol>
+        <symbol id="icon-file" viewBox="0 0 24 24">
+            <path fill="#eef1f5" stroke="#aab4c0" stroke-width="0.5"
+                  d="M6 2h8l5 5v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z" />
+            <path fill="#cfd6e0" d="M14 2v5h5z" />
+        </symbol>
+        <symbol id="icon-chevron" viewBox="0 0 24 24">
+            <path fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6" />
+        </symbol>
+    </svg>
+
+    <div id="app">
+        <header id="toolbar">
+            <button id="btn-new-folder" type="button" title="New folder">📁+ New folder</button>
+            <button id="btn-upload" type="button" title="Upload file">⭱ Upload</button>
+            <input id="file-input" type="file" multiple hidden />
+            <span class="separator"></span>
+            <button id="btn-copy" type="button" title="Copy" disabled>Copy</button>
+            <button id="btn-cut" type="button" title="Cut" disabled>Cut</button>
+            <button id="btn-paste" type="button" title="Paste" disabled>Paste</button>
+            <span class="separator"></span>
+            <button id="btn-download" type="button" title="Download" disabled>Download</button>
+            <button id="btn-delete" type="button" title="Delete" disabled>Delete</button>
+            <span class="separator"></span>
+            <button id="btn-search" type="button" title="Search">🔍 Search</button>
+            <button id="btn-refresh" type="button" title="Refresh">⟳ Refresh</button>
+        </header>
+
+        <nav id="breadcrumb"></nav>
+
+        <main id="main">
+            <aside id="tree-pane">
+                <ul id="tree" class="tree"></ul>
+            </aside>
+            <section id="list-pane">
+                <div class="list-header">
+                    <span class="col-name">Name</span>
+                    <span class="col-detail">Size</span>
+                </div>
+                <div id="file-list" class="file-list"></div>
+            </section>
+        </main>
+
+        <footer id="status-bar"></footer>
+    </div>
+
+    <script src="js/app.js"></script>
 </body>
 </html>
