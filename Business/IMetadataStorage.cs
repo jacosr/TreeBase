@@ -46,10 +46,17 @@
 
 
         /// <summary>
-        /// Generates and returns the next unique identifier.   
+        /// Generates and returns the next unique identifier.
         /// </summary>
         /// <returns>The next unique identifier as an integer.</returns>
         int GetNextId();
+
+
+        /// <summary>
+        /// Retrieves all items currently held in the metadata storage.
+        /// </summary>
+        /// <returns>A task that represents the asynchronous operation. The task result contains all stored items.</returns>
+        Task<IEnumerable<T>> GetAll();
 
 
         /// <summary>
