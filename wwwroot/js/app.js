@@ -17,6 +17,7 @@
         btnPaste: document.getElementById('btn-paste'),
         btnDownload: document.getElementById('btn-download'),
         btnDelete: document.getElementById('btn-delete'),
+        searchInput: document.getElementById('search-input'),
         btnSearch: document.getElementById('btn-search'),
         btnRefresh: document.getElementById('btn-refresh'),
     };
@@ -503,7 +504,7 @@
     }
 
     async function search() {
-        const term = prompt('Search for:');
+        const term = els.searchInput.value.trim();
         if (!term) return;
 
         let scopePath = null;

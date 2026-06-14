@@ -57,6 +57,20 @@ html, body {
     margin: 0 4px;
 }
 
+#search-input {
+    width: 200px;
+    padding: 5px 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+#search-input:focus {
+    outline: none;
+    border-color: #99c2ff;
+    box-shadow: 0 0 0 2px rgba(153, 194, 255, 0.3);
+}
+
 /* Breadcrumb */
 #breadcrumb {
     padding: 6px 12px;
