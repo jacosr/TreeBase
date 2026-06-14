@@ -12,10 +12,12 @@ namespace TestProject.Controllers
     public class StorageController : ControllerBase
     {
         private readonly FileSystemStorage _storage;
+        private readonly IMetadataStorage<FileSystemItem> _metadataStorage;
 
-        public StorageController(FileSystemStorage storage)
+        public StorageController(FileSystemStorage storage, IMetadataStorage<FileSystemItem> metadataStorage)
         {
             _storage = storage;
+            _metadataStorage = metadataStorage;
         }
 
         public class CreateItemRequest
@@ -37,57 +39,12 @@ namespace TestProject.Controllers
         }
 
         /// <summary>
-        /// Retrieves the metadata for the item with the given identifier.
-        /// </summary>
-        [HttpGet("{id}")]
-        public async Task<ActionResult<FileSystemItem>> Get(int id)
-        {
-            var item = await _storage.Get(id);
-            if (item == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(item);
-        }
-
-        /// <summary>
-        /// Retrieves the direct children of the directory with the given identifier.
-        /// </summary>
-        [HttpGet("{id}/children")]
-        public async Task<ActionResult<IEnumerable<FileSystemEntry>>> GetChildren(int id)
-        {
-            var item = await _storage.Get(id);
-            if (item == null || !item.IsDirectory)
-            {
-                return NotFound();
-            }
-
-            return Ok(await _storage.GetChildren(id));
-        }
-
-        /// <summary>
-        /// Retrieves a single item together with its file count (if it is a directory).
-        /// </summary>
-        [HttpGet("{id}/entry")]
-        public async Task<ActionResult<FileSystemEntry>> GetEntry(int id)
-        {
-            var entry = await _storage.GetEntry(id);
-            if (entry == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(entry);
-        }
-
-        /// <summary>
         /// Downloads the content of the file with the given identifier.
         /// </summary>
         [HttpGet("{id}/content")]
         public async Task<IActionResult> GetContent(int id)
         {
-            var item = await _storage.Get(id);
+            var item = await _metadataStorage.Get(id);
             if (item == null || item.IsDirectory)
             {
                 return NotFound();
@@ -113,7 +70,7 @@ namespace TestProject.Controllers
                 return BadRequest("Name is required.");
             }
 
-            var parent = await _storage.Get(request.ParentId);
+            var parent = await _metadataStorage.Get(request.ParentId);
             if (parent == null || !parent.IsDirectory)
             {
                 return BadRequest("Parent must refer to an existing directory.");
@@ -132,7 +89,7 @@ namespace TestProject.Controllers
             };
 
             await _storage.Save(item);
-            return CreatedAtAction(nameof(Get), new { id = item.Id }, item);
+            return CreatedAtAction("Get", "Search", new { id = item.Id }, item);
         }
 
         /// <summary>
@@ -141,7 +98,7 @@ namespace TestProject.Controllers
         [HttpPut("{id}/content")]
         public async Task<IActionResult> SetContent(int id, IFormFile file)
         {
-            var item = await _storage.Get(id);
+            var item = await _metadataStorage.Get(id);
             if (item == null || item.IsDirectory)
             {
                 return NotFound();

@@ -164,15 +164,15 @@
     }
 
     async function loadChildren(node) {
-        const entries = await apiGet(`/api/storage/${node.id}/children`);
+        const items = await apiGet(`/api/search/${node.id}/children`);
         node.childrenUl.innerHTML = '';
 
-        const directories = entries
-            .filter((e) => e.item.isDirectory)
-            .sort((a, b) => a.item.name.localeCompare(b.item.name));
+        const directories = items
+            .filter((item) => item.isDirectory)
+            .sort((a, b) => a.name.localeCompare(b.name));
 
-        for (const entry of directories) {
-            const childNode = createTreeNode(entry.item, node);
+        for (const item of directories) {
+            const childNode = createTreeNode(item, node);
             node.childrenUl.appendChild(childNode.li);
         }
 
@@ -229,7 +229,7 @@
     }
 
     async function initTree() {
-        const root = await apiGet(`/api/storage/${ROOT_ID}`);
+        const root = await apiGet(`/api/search/${ROOT_ID}`);
         const node = createTreeNode(root, null);
         els.tree.appendChild(node.li);
         await selectTreeNode(node);
@@ -372,8 +372,15 @@
         return row;
     }
 
-    function createFileRow(entry) {
-        return createRow(entry.item, entry.fileCount, { onOpenDirectory: (item) => navigateTo(item.id) });
+    /** Returns the number of files (recursively) contained within the directory at the given path. */
+    async function getFileCount(path) {
+        const results = await apiGet(`/api/search?${new URLSearchParams({ path }).toString()}`);
+        return results.filter((i) => !i.isDirectory).length;
+    }
+
+    async function createFileRow(item) {
+        const fileCount = item.isDirectory ? await getFileCount(item.path) : null;
+        return createRow(item, fileCount, { onOpenDirectory: (i) => navigateTo(i.id) });
     }
 
     async function refreshList() {
@@ -382,15 +389,15 @@
 
         state.searchMode = false;
         clearSelection();
-        const entries = await apiGet(`/api/storage/${node.id}/children`);
+        const items = await apiGet(`/api/search/${node.id}/children`);
 
-        entries.sort((a, b) => {
-            if (a.item.isDirectory !== b.item.isDirectory) return a.item.isDirectory ? -1 : 1;
-            return a.item.name.localeCompare(b.item.name);
+        items.sort((a, b) => {
+            if (a.isDirectory !== b.isDirectory) return a.isDirectory ? -1 : 1;
+            return a.name.localeCompare(b.name);
         });
 
         els.fileList.innerHTML = '';
-        if (entries.length === 0) {
+        if (items.length === 0) {
             const empty = document.createElement('div');
             empty.className = 'empty-message';
             empty.textContent = 'This folder is empty.';
@@ -398,8 +405,8 @@
             return;
         }
 
-        for (const entry of entries) {
-            els.fileList.appendChild(createFileRow(entry));
+        for (const item of items) {
+            els.fileList.appendChild(await createFileRow(item));
         }
     }
 
@@ -558,11 +565,7 @@
         });
 
         for (const item of sorted) {
-            let fileCount = null;
-            if (item.isDirectory) {
-                const entry = await apiGet(`/api/storage/${item.id}/entry`);
-                fileCount = entry.fileCount;
-            }
+            const fileCount = item.isDirectory ? await getFileCount(item.path) : null;
             els.fileList.appendChild(createRow(item, fileCount, { showPath: true }));
         }
     }
@@ -596,8 +599,8 @@
 
     /** Picks a non-colliding name for a copy placed into the given folder. */
     async function uniqueNameFor(targetFolderId, baseName) {
-        const entries = await apiGet(`/api/storage/${targetFolderId}/children`);
-        const existing = new Set(entries.map((e) => e.item.name));
+        const items = await apiGet(`/api/search/${targetFolderId}/children`);
+        const existing = new Set(items.map((i) => i.name));
         if (!existing.has(baseName)) return baseName;
 
         const dot = baseName.lastIndexOf('.');

@@ -25,18 +25,7 @@ namespace TestProject.Business
 
 
         /// <summary>
-        /// Retrieves an entity of type <typeparamref name="T"/> by its unique identifier.  
-        /// </summary>
-        /// <remarks>This method performs an asynchronous operation to retrieve the entity. Ensure that
-        /// the entity type <typeparamref name="T"/>  is supported by the underlying data source.</remarks>
-        /// <param name="id">The unique identifier of the entity to retrieve. Must be a positive integer.</param>
-        /// <returns>A task that represents the asynchronous operation. The task result contains the entity of type 
-        /// <typeparamref name="T"/>  if found; otherwise, <see langword="null"/>.</returns>
-        Task<T> Get(int id);
-
-
-        /// <summary>
-        /// Deletes the entity with the specified identifier.   
+        /// Deletes the entity with the specified identifier.
         /// </summary>
         /// <remarks>This method performs an asynchronous operation to delete an entity identified by the
         /// given <paramref name="id"/>. If necessary to ensure unexpected behavior, it ensures the entity exists 

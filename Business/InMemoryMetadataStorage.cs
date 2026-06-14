@@ -41,6 +41,7 @@ namespace TestProject.Business
 
         public async Task Update(T item)
         {
+            item.Trigrams = TrigramIndex.GetTrigrams(item.Name).ToArray();
             _items[item.Id] = item;
             await AppendLog("Update", item.Id, item);
         }
@@ -48,6 +49,7 @@ namespace TestProject.Business
         public async Task Add(T newItem)
         {
             newItem.Id = GetNextId();
+            newItem.Trigrams = TrigramIndex.GetTrigrams(newItem.Name).ToArray();
             _items[newItem.Id] = newItem;
             await AppendLog("Add", newItem.Id, newItem);
         }

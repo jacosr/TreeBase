@@ -21,6 +21,26 @@
 
 
         /// <summary>
+        /// Retrieves an item of type <typeparamref name="T"/> by its unique identifier, using only the metadata
+        /// storage.
+        /// </summary>
+        /// <param name="id">The unique identifier of the item to retrieve.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains the item if found;
+        /// otherwise, <see langword="null"/>.</returns>
+        Task<T> Get(int id);
+
+
+        /// <summary>
+        /// Retrieves the direct children of the item with the specified identifier, using only the metadata
+        /// storage. If the item does not exist or is not a directory, an empty collection is returned.
+        /// </summary>
+        /// <param name="id">The unique identifier of the directory whose children should be retrieved.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains the direct children
+        /// of the directory.</returns>
+        Task<IEnumerable<T>> GetChildren(int id);
+
+
+        /// <summary>
         /// Finds items of type <typeparamref name="T"/> based on the specified path and name. The search engine will
         ///  use the path and name to query its indexes and return a collection of matching items. Either path or name can be null, 
         /// in which case the search engine will return all items matching the non-null parameter. If both parameters are 

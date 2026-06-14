@@ -1,16 +1,6 @@
 namespace TestProject.Business
 {
     /// <summary>
-    /// A <see cref="FileSystemItem"/> together with the number of files it contains, used when listing the
-    /// children of a directory. <see cref="FileCount"/> is only populated for sub-directories.
-    /// </summary>
-    public class FileSystemEntry
-    {
-        public required FileSystemItem Item { get; set; }
-        public int? FileCount { get; set; }
-    }
-
-    /// <summary>
     /// A file-system-backed implementation of <see cref="IStorage{T}"/> for <see cref="FileSystemItem"/>. Items are
     /// persisted as real files and directories under a root directory on disk, with their metadata kept in sync via
     /// <see cref="MetadataStorage"/> and their search indexes kept in sync via the supplied <see cref="ISearchEngine{T}"/>.
@@ -96,7 +86,6 @@ namespace TestProject.Business
                     Parent = itemPath,
                     Path = childPath,
                     IsDirectory = true,
-                    Trigrams = TrigramIndex.GetTrigrams(name).ToArray(),
                 });
 
                 CollectDirectory(directory, childPath, items);
@@ -113,91 +102,8 @@ namespace TestProject.Business
                     Path = childPath,
                     IsDirectory = false,
                     Size = (int)new FileInfo(file).Length,
-                    Trigrams = TrigramIndex.GetTrigrams(name).ToArray(),
                 });
             }
-        }
-
-        public async Task<FileSystemItem> Get(int id)
-        {
-            var item = await Metadata.Get(id);
-            if (item == null)
-            {
-                return item!;
-            }
-
-            if (!item.IsDirectory)
-            {
-                var physicalPath = GetPhysicalPath(item.Path);
-                item.Size = File.Exists(physicalPath) ? (int)new FileInfo(physicalPath).Length : item.Size;
-            }
-
-            return item;
-        }
-
-        /// <summary>
-        /// Returns the direct children of the directory with the given identifier. For sub-directories, the
-        /// returned <see cref="FileSystemEntry.FileCount"/> is the number of files (recursively) contained within
-        /// that sub-directory.
-        /// </summary>
-        public async Task<IEnumerable<FileSystemEntry>> GetChildren(int id)
-        {
-            var item = await Metadata.Get(id);
-            if (item == null || !item.IsDirectory)
-            {
-                return Enumerable.Empty<FileSystemEntry>();
-            }
-
-            var all = (await Metadata.GetAll()).ToList();
-            var children = all.Where(i => i.Parent == item.Path);
-
-            var result = new List<FileSystemEntry>();
-            foreach (var child in children)
-            {
-                if (!child.IsDirectory)
-                {
-                    var physicalPath = GetPhysicalPath(child.Path);
-                    child.Size = File.Exists(physicalPath) ? (int)new FileInfo(physicalPath).Length : child.Size;
-                }
-
-                result.Add(BuildEntry(child, all));
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Returns a single item together with its file count (if it is a directory), for use when displaying
-        /// search results that may reference items outside the currently listed directory.
-        /// </summary>
-        public async Task<FileSystemEntry?> GetEntry(int id)
-        {
-            var item = await Metadata.Get(id);
-            if (item == null)
-            {
-                return null;
-            }
-
-            if (!item.IsDirectory)
-            {
-                var physicalPath = GetPhysicalPath(item.Path);
-                item.Size = File.Exists(physicalPath) ? (int)new FileInfo(physicalPath).Length : item.Size;
-            }
-
-            var all = (await Metadata.GetAll()).ToList();
-            return BuildEntry(item, all);
-        }
-
-        private static FileSystemEntry BuildEntry(FileSystemItem item, List<FileSystemItem> all)
-        {
-            if (!item.IsDirectory)
-            {
-                return new FileSystemEntry { Item = item, FileCount = null };
-            }
-
-            var prefix = item.Path == RootPath ? RootPath : item.Path + "/";
-            var fileCount = all.Count(i => !i.IsDirectory && i.Path.StartsWith(prefix));
-            return new FileSystemEntry { Item = item, FileCount = fileCount };
         }
 
         public async Task Delete(int id)

@@ -19,6 +19,23 @@ namespace TestProject.Business
         private IMetadataStorage<FileSystemItem> Metadata =>
             _metadataStorage ?? throw new InvalidOperationException($"{nameof(MetadataStorage)} has not been set.");
 
+        public async Task<FileSystemItem> Get(int id)
+        {
+            return await Metadata.Get(id);
+        }
+
+        public async Task<IEnumerable<FileSystemItem>> GetChildren(int id)
+        {
+            var item = await Metadata.Get(id);
+            if (item == null || !item.IsDirectory)
+            {
+                return Enumerable.Empty<FileSystemItem>();
+            }
+
+            var all = await Metadata.GetAll();
+            return all.Where(i => i.Parent == item.Path);
+        }
+
         public Task Add(int id, string path, string name)
         {
             _pathIndex.Insert(path, id);

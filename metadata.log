@@ -20,3 +20,10 @@
 {"Action":"Delete","Id":13,"Item":null}
 {"Action":"Delete","Id":14,"Item":null}
 {"Action":"Delete","Id":11,"Item":null}
+{"Action":"Add","Id":15,"Item":{"Id":15,"Name":"TestFolder","Size":null,"IsDirectory":true,"Parent":"/","Path":"/TestFolder","Trigrams":["tes","est","stf","tfo","fol","old","lde","der"]}}
+{"Action":"Add","Id":16,"Item":{"Id":16,"Name":"hello.txt","Size":0,"IsDirectory":false,"Parent":"/TestFolder","Path":"/TestFolder/hello.txt","Trigrams":["hel","ell","llo","lo.","o.t",".tx","txt"]}}
+{"Action":"Update","Id":16,"Item":{"Id":16,"Name":"hello.txt","Size":12,"IsDirectory":false,"Parent":"/TestFolder","Path":"/TestFolder/hello.txt","Trigrams":["hel","ell","llo","lo.","o.t",".tx","txt"]}}
+{"Action":"Delete","Id":16,"Item":null}
+{"Action":"Delete","Id":15,"Item":null}
+{"Action":"Add","Id":17,"Item":{"Id":17,"Name":"VerifyFolder","Size":null,"IsDirectory":true,"Parent":"/","Path":"/VerifyFolder","Trigrams":["ver","eri","rif","ify","fyf","yfo","fol","old","lde","der"]}}
+{"Action":"Delete","Id":17,"Item":null}

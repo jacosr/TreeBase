@@ -27,5 +27,35 @@ namespace TestProject.Controllers
             var results = await _searchEngine.Find(path!, name!);
             return Ok(results);
         }
+
+        /// <summary>
+        /// Retrieves the metadata for the item with the given identifier.
+        /// </summary>
+        [HttpGet("{id}")]
+        public async Task<ActionResult<FileSystemItem>> Get(int id)
+        {
+            var item = await _searchEngine.Get(id);
+            if (item == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(item);
+        }
+
+        /// <summary>
+        /// Retrieves the direct children of the directory with the given identifier.
+        /// </summary>
+        [HttpGet("{id}/children")]
+        public async Task<ActionResult<IEnumerable<FileSystemItem>>> GetChildren(int id)
+        {
+            var item = await _searchEngine.Get(id);
+            if (item == null || !item.IsDirectory)
+            {
+                return NotFound();
+            }
+
+            return Ok(await _searchEngine.GetChildren(id));
+        }
     }
 }
