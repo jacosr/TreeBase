@@ -32,14 +32,18 @@ namespace TestProject.Business
                 return Enumerable.Empty<FileSystemItem>();
             }
 
-            var all = await Metadata.GetAll();
-            return all.Where(i => i.Parent == item.Path);
+            return Metadata.Items.Where(i => i.Parent == item.Path);
         }
 
-        public Task Add(int id, string path, string name)
+        public Task Add(IFindable item)
         {
+            var id = item.Id;
+            var path = item.Path;
+            var name = item.Name;   
+
             _pathIndex.Insert(path, id);
             _nameIndex.Add(id, name);
+
             return Task.CompletedTask;
         }
 
@@ -57,13 +61,37 @@ namespace TestProject.Business
 
         public async Task BuildIndexes()
         {
-            foreach (var item in await Metadata.GetAll())
+            foreach (var item in Metadata.Items)
             {
-                await Add(item.Id, item.Path, item.Name);
+                await Add(item);
             }
         }
 
-        public async Task<IEnumerable<FileSystemItem>> Find(string path, string name)
+        public async Task<IEnumerable<FileSystemItem>> GetDescendants(int id)
+        {
+            var item = await Metadata.Get(id);
+            if (item == null || !item.IsDirectory)
+            {
+                return Enumerable.Empty<FileSystemItem>();
+            }
+
+            var prefix = item.Path == FileSystemStorage.RootPath ? FileSystemStorage.RootPath : item.Path + "/";
+            var ids = _pathIndex.SearchByPrefix(prefix).Where(descId => descId != id);
+
+            var results = new List<FileSystemItem>();
+            foreach (var descId in ids)
+            {
+                var descendant = await Metadata.Get(descId);
+                if (descendant != null)
+                {
+                    results.Add(descendant);
+                }
+            }
+
+            return results;
+        }
+
+        public async Task<IEnumerable<FileSystemItem>> Find(string? path, string? name)
         {
             IEnumerable<int>? ids = null;
 

@@ -41,6 +41,17 @@
 
 
         /// <summary>
+        /// Retrieves all descendants of the item with the specified identifier (i.e. every item whose path is
+        /// nested under the item's path), using only the metadata storage. The item itself is not included. If the
+        /// item does not exist or is not a directory, an empty collection is returned.
+        /// </summary>
+        /// <param name="id">The unique identifier of the directory whose descendants should be retrieved.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains the descendants
+        /// of the directory.</returns>
+        Task<IEnumerable<T>> GetDescendants(int id);
+
+
+        /// <summary>
         /// Finds items of type <typeparamref name="T"/> based on the specified path and name. The search engine will
         ///  use the path and name to query its indexes and return a collection of matching items. Either path or name can be null, 
         /// in which case the search engine will return all items matching the non-null parameter. If both parameters are 
@@ -49,7 +60,7 @@
         /// <param name="path">The path to restrict the search to</param>
         /// <param name="name">The name or substring of the name to search for</param>
         /// <returns></returns>
-        Task<IEnumerable<T>> Find(string path, string name);
+        Task<IEnumerable<T>> Find(string? path, string? name);
 
 
         /// <summary>
@@ -71,7 +82,7 @@
         /// <param name="path">The path of the item to add</param>
         /// <param name="name">The name of the item to add</param>
         /// <returns></returns>
-        Task Add(int id, string path, string name);
+        Task Add(IFindable item);
 
 
         /// <summary>

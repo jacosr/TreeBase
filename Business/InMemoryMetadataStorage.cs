@@ -27,6 +27,12 @@ namespace TestProject.Business
         private int _nextId;
         private string? _logPath;
 
+
+        public bool IsEmpty => _items.IsEmpty;
+        
+        public IEnumerable<T> Items => _items.Values;
+
+
         public Task<T> Get(int id)
         {
             _items.TryGetValue(id, out var item);

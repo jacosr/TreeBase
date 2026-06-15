@@ -53,13 +53,6 @@
 
 
         /// <summary>
-        /// Retrieves all items currently held in the metadata storage.
-        /// </summary>
-        /// <returns>A task that represents the asynchronous operation. The task result contains all stored items.</returns>
-        Task<IEnumerable<T>> GetAll();
-
-
-        /// <summary>
         /// Loads data from the specified file path asynchronously and populates the metadata storage with the loaded data. 
         /// </summary>
         /// <remarks>This method reads the contents of the file specified by <paramref name="path"/> and
@@ -76,6 +69,10 @@
         /// <param name="path">The file path where the data will be saved. Must be a valid, writable path.</param>
         /// <returns>A task that represents the asynchronous save operation.</returns>
         Task Save(string path);
+
+        bool IsEmpty { get; }
+        
+        IEnumerable<T> Items { get; }
     }
 
 }

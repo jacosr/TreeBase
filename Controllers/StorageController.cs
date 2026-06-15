@@ -13,11 +13,13 @@ namespace TestProject.Controllers
     {
         private readonly FileSystemStorage _storage;
         private readonly IMetadataStorage<FileSystemItem> _metadataStorage;
+        private readonly ISearchEngine<FileSystemItem> _searchEngine;
 
-        public StorageController(FileSystemStorage storage, IMetadataStorage<FileSystemItem> metadataStorage)
+        public StorageController(FileSystemStorage storage, IMetadataStorage<FileSystemItem> metadataStorage, ISearchEngine<FileSystemItem> searchEngine)
         {
             _storage = storage;
             _metadataStorage = metadataStorage;
+            _searchEngine = searchEngine;
         }
 
         public class CreateItemRequest
@@ -89,6 +91,9 @@ namespace TestProject.Controllers
             };
 
             await _storage.Save(item);
+            await _metadataStorage.Add(item);
+            await _searchEngine.Add(item);
+
             return CreatedAtAction("Get", "Search", new { id = item.Id }, item);
         }
 
@@ -115,7 +120,36 @@ namespace TestProject.Controllers
         [HttpPut("{id}/move")]
         public async Task<IActionResult> Move(int id, [FromBody] MoveRequest request)
         {
+            var item = await _metadataStorage.Get(id);
+            var parent = await _metadataStorage.Get(request.ParentId);
+
+            string oldPath = item.Path;
+            string newPath = $"{parent.Path}/{item.Name}";
+            if (newPath == oldPath)
+            {
+                return NoContent();
+            }
+
+            var descendants = item.IsDirectory ? await GetDescendants(item) : [];
+
             await _storage.Move(id, request.ParentId);
+
+            item.Parent = parent.Path;
+            item.Path = newPath;
+
+            await _metadataStorage.Update(item);
+            await _searchEngine.Delete(item.Id);
+            await _searchEngine.Add(item);
+
+            foreach (var descendant in descendants)
+            {
+                descendant.Parent = descendant.Parent.Replace(oldPath, newPath);
+                descendant.Path = $"{descendant.Parent}/{descendant.Name}";
+                await _metadataStorage.Update(descendant);
+                await _searchEngine.Delete(descendant.Id);
+                await _searchEngine.Add(descendant);
+            }
+
             return NoContent();
         }
 
@@ -126,6 +160,40 @@ namespace TestProject.Controllers
         public async Task<IActionResult> Copy(int id, [FromBody] CopyRequest request)
         {
             await _storage.Copy(id, request.ParentId, request.Name);
+
+            var item = await _metadataStorage.Get(id);
+            var parent = await _metadataStorage.Get(request.ParentId);
+
+            var copy = new FileSystemItem
+            {
+                Name = request.Name,
+                Parent = parent.Path,
+                Path = parent.Path + "/" + request.Name,
+                IsDirectory = item.IsDirectory,
+                Size = item.IsDirectory ? null : item.Size,
+                Trigrams = TrigramIndex.GetTrigrams(request.Name).ToArray(),
+            };
+            await _metadataStorage.Add(copy);
+            await _searchEngine.Add(copy);
+
+            if (item.IsDirectory)
+            {
+                foreach (var descendant in await GetDescendants(item))
+                {
+                    var descendantCopyParent = descendant.Parent.Replace(item.Path, copy.Path);
+                    var descendantCopy = new FileSystemItem
+                    {
+                        Name = descendant.Name,
+                        Parent = descendantCopyParent,
+                        Path = $"{descendantCopyParent}/{descendant.Name}",
+                        IsDirectory = descendant.IsDirectory,
+                        Size = descendant.IsDirectory ? null : descendant.Size,
+                        Trigrams = descendant.Trigrams,
+                    };
+                    await _metadataStorage.Add(descendantCopy);
+                    await _searchEngine.Add(descendantCopy);
+                }
+            }
             return NoContent();
         }
 
@@ -136,7 +204,25 @@ namespace TestProject.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             await _storage.Delete(id);
+            var item = await _metadataStorage.Get(id);
+
+            var descendants = item.IsDirectory ? await GetDescendants(item) : [];
+            foreach (var descendant in descendants)
+            {
+                await _searchEngine.Delete(descendant.Id);
+                await _metadataStorage.Delete(descendant.Id);
+            }
+
+            await _searchEngine.Delete(item.Id);
+            await _metadataStorage.Delete(item.Id);
+
             return NoContent();
+        }
+
+        private async Task<List<FileSystemItem>> GetDescendants(FileSystemItem item)
+        {
+            var descendants = await _searchEngine.GetDescendants(item.Id);
+            return descendants.ToList();
         }
     }
 }

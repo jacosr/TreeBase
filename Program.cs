@@ -24,7 +24,7 @@ namespace TestProject {
                     ? configuredPath
                     : Path.Combine(builder.Environment.ContentRootPath, configuredPath);
 
-                return new FileSystemStorage(rootPath, sp.GetRequiredService<ISearchEngine<FileSystemItem>>());
+                return new FileSystemStorage(rootPath);
             });
             builder.Services.AddSingleton<IStorage<FileSystemItem>>(sp =>
                 sp.GetRequiredService<FileSystemStorage>());
@@ -44,7 +44,7 @@ namespace TestProject {
                 await metadataStorage.Load(metadataFile);
             }
 
-            if (!(await metadataStorage.GetAll()).Any())
+            if (metadataStorage.IsEmpty)
             {
                 foreach (var item in await storage.CollectMetadata())
                 {
@@ -52,7 +52,6 @@ namespace TestProject {
                 }
             }
 
-            await storage.EnsureRoot();
             await searchEngine.BuildIndexes();
 
             // Configure the HTTP request pipeline.
