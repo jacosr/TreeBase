@@ -42,7 +42,7 @@
         /// </summary>
         /// <param name="newItem">The item to add to the collection. Cannot be <see langword="null"/>.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        Task Add(T newItem);
+        Task<int> Add(T newItem);
 
 
         /// <summary>

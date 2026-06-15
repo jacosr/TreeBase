@@ -12,6 +12,7 @@
         int Id { get; set; }
         string Name { get; set; }
         string Parent { get; set; }
+        int ParentId { get; set; }
         string Path { get; set; }
         string[] Trigrams { get; set; }
     }

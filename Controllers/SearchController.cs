@@ -11,10 +11,12 @@ namespace TestProject.Controllers
     public class SearchController : ControllerBase
     {
         private readonly ISearchEngine<FileSystemItem> _searchEngine;
+        private readonly IMetadataStorage<FileSystemItem> _metadataStorage;
 
-        public SearchController(ISearchEngine<FileSystemItem> searchEngine)
+        public SearchController(ISearchEngine<FileSystemItem> searchEngine, IMetadataStorage<FileSystemItem> metadataStorage)
         {
             _searchEngine = searchEngine;
+            _metadataStorage = metadataStorage;
         }
 
         /// <summary>
@@ -56,6 +58,29 @@ namespace TestProject.Controllers
             }
 
             return Ok(await _searchEngine.GetChildren(id));
+        }
+
+        /// <summary>
+        /// Counts the files directly contained in the directory with the given identifier, storing the result in
+        /// the directory's metadata <see cref="FileSystemItem.Size"/> property so that future requests can read it
+        /// directly.
+        /// </summary>
+        [HttpGet("{id}/filecount")]
+        public async Task<ActionResult<int>> GetFileCount(int id)
+        {
+            var item = await _searchEngine.Get(id);
+            if (item == null || !item.IsDirectory)
+            {
+                return NotFound();
+            }
+
+            var children = await _searchEngine.GetChildren(id);
+            var count = children.Count(i => !i.IsDirectory);
+
+            item.Size = count;
+            await _metadataStorage.Update(item);
+
+            return Ok(count);
         }
     }
 }

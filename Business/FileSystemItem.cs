@@ -19,6 +19,7 @@ namespace TestProject.Business
         public int? Size { get; set; }
         public bool IsDirectory { get; set; }
         public string Parent { get; set; } = string.Empty;
+        public int ParentId { get; set; }
         public string Path { get; set; } = string.Empty;
         public string[] Trigrams { get; set; } = Array.Empty<string>();
     }

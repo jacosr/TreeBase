@@ -46,10 +46,7 @@ namespace TestProject {
 
             if (metadataStorage.IsEmpty)
             {
-                foreach (var item in await storage.CollectMetadata())
-                {
-                    await metadataStorage.Add(item);
-                }
+                await storage.CollectMetadata();
             }
 
             await searchEngine.BuildIndexes();

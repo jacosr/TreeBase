@@ -43,6 +43,7 @@ ScaffoldingReadMe.txt
 ~$*
 *~
 CodeCoverage/
+Root/
 
 # MSBuild Binary and Structured Log
 *.binlog

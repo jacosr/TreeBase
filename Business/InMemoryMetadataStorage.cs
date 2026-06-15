@@ -33,10 +33,10 @@ namespace TestProject.Business
         public IEnumerable<T> Items => _items.Values;
 
 
-        public Task<T> Get(int id)
+        public async Task<T> Get(int id)
         {
             _items.TryGetValue(id, out var item);
-            return Task.FromResult(item!);
+            return item!;
         }
 
         public async Task Delete(int id)
@@ -52,12 +52,14 @@ namespace TestProject.Business
             await AppendLog("Update", item.Id, item);
         }
 
-        public async Task Add(T newItem)
+        public async Task<int> Add(T newItem)
         {
             newItem.Id = GetNextId();
             newItem.Trigrams = TrigramIndex.GetTrigrams(newItem.Name).ToArray();
             _items[newItem.Id] = newItem;
             await AppendLog("Add", newItem.Id, newItem);
+
+            return newItem.Id;
         }
 
         public int GetNextId()
@@ -65,10 +67,6 @@ namespace TestProject.Business
             return Interlocked.Increment(ref _nextId);
         }
 
-        public Task<IEnumerable<T>> GetAll()
-        {
-            return Task.FromResult<IEnumerable<T>>(_items.Values.ToList());
-        }
 
         /// <summary>
         /// Replays the append-only metadata log at <paramref name="path"/> to rebuild the in-memory state, and

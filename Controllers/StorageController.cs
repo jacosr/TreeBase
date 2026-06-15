@@ -122,6 +122,7 @@ namespace TestProject.Controllers
         {
             var item = await _metadataStorage.Get(id);
             var parent = await _metadataStorage.Get(request.ParentId);
+            var oldParent = await _searchEngine.Get(item.ParentId);
 
             string oldPath = item.Path;
             string newPath = $"{parent.Path}/{item.Name}";
@@ -135,6 +136,7 @@ namespace TestProject.Controllers
             await _storage.Move(id, request.ParentId);
 
             item.Parent = parent.Path;
+            item.ParentId = parent.Id;
             item.Path = newPath;
 
             await _metadataStorage.Update(item);
@@ -150,6 +152,13 @@ namespace TestProject.Controllers
                 await _searchEngine.Add(descendant);
             }
 
+            if (!item.IsDirectory)
+            {
+                parent.Size += 1;
+                oldParent.Size -= 1;
+                await _metadataStorage.Update(parent);
+                await _metadataStorage.Update(oldParent);
+            }
             return NoContent();
         }
 
@@ -168,6 +177,7 @@ namespace TestProject.Controllers
             {
                 Name = request.Name,
                 Parent = parent.Path,
+                ParentId = parent.Id,
                 Path = parent.Path + "/" + request.Name,
                 IsDirectory = item.IsDirectory,
                 Size = item.IsDirectory ? null : item.Size,
@@ -194,11 +204,17 @@ namespace TestProject.Controllers
                     await _searchEngine.Add(descendantCopy);
                 }
             }
+            else
+            {
+                parent.Size += 1;
+                await _metadataStorage.Update(parent);
+            }
             return NoContent();
         }
 
         /// <summary>
         /// Deletes the item with the given identifier.
+        /// and updates the size of the parent directory if the deleted item is a file.
         /// </summary>
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
@@ -211,6 +227,13 @@ namespace TestProject.Controllers
             {
                 await _searchEngine.Delete(descendant.Id);
                 await _metadataStorage.Delete(descendant.Id);
+            }
+
+            if (!item.IsDirectory)
+            {
+                var parent = await _metadataStorage.Get(item.ParentId);
+                parent.Size -= 1;
+                await _metadataStorage.Update(parent);
             }
 
             await _searchEngine.Delete(item.Id);

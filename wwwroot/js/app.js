@@ -372,14 +372,19 @@
         return row;
     }
 
-    /** Returns the number of files (recursively) contained within the directory at the given path. */
-    async function getFileCount(path) {
-        const results = await apiGet(`/api/search?${new URLSearchParams({ path }).toString()}`);
-        return results.filter((i) => !i.isDirectory).length;
+    /** Returns the number of files contained within the directory item, computing and caching it if necessary. */
+    async function getFileCount(item) {
+        if (item.size !== null && item.size !== undefined) {
+            return item.size;
+        }
+
+        const count = await apiGet(`/api/search/${item.id}/filecount`);
+        item.size = count;
+        return count;
     }
 
     async function createFileRow(item) {
-        const fileCount = item.isDirectory ? await getFileCount(item.path) : null;
+        const fileCount = item.isDirectory ? await getFileCount(item) : null;
         return createRow(item, fileCount, { onOpenDirectory: (i) => navigateTo(i.id) });
     }
 
@@ -565,7 +570,7 @@
         });
 
         for (const item of sorted) {
-            const fileCount = item.isDirectory ? await getFileCount(item.path) : null;
+            const fileCount = item.isDirectory ? await getFileCount(item) : null;
             els.fileList.appendChild(createRow(item, fileCount, { showPath: true }));
         }
     }

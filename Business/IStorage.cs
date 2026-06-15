@@ -89,6 +89,6 @@ namespace TestProject.Business
         /// on the metadata of all items in the storage.</returns>
         /// </returns>
         /// <returns></returns>
-        Task<IEnumerable<T>> CollectMetadata();
+        Task CollectMetadata();
     }
 }

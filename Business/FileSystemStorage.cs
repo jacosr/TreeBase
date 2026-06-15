@@ -32,52 +32,54 @@ namespace TestProject.Business
         /// beneath it. The returned items have no <see cref="FileSystemItem.Id"/> assigned; they are intended to be
         /// added to an empty <see cref="IMetadataStorage{T}"/> to (re)initialize it from the contents of the disk.
         /// </summary>
-        public Task<IEnumerable<FileSystemItem>> CollectMetadata()
+        public async Task CollectMetadata()
         {
-            var items = new List<FileSystemItem>
+            var root = new FileSystemItem
             {
-                new FileSystemItem
-                {
-                    Name = string.Empty,
-                    Parent = string.Empty,
-                    Path = RootPath,
-                    IsDirectory = true,
-                },
+                Name = string.Empty,
+                Parent = string.Empty,
+                ParentId = 0,
+                Path = RootPath,
+                IsDirectory = true
             };
+            int rootId = await Metadata.Add(root);
 
-            CollectDirectory(_rootDirectory, RootPath, items);
-            return Task.FromResult<IEnumerable<FileSystemItem>>(items);
+            await CollectDirectory(_rootDirectory, RootPath, rootId);
         }
 
-        private static void CollectDirectory(string physicalPath, string itemPath, List<FileSystemItem> items)
+        private async Task CollectDirectory(string physicalPath, string itemPath, int parentId)
         {
             foreach (var directory in Directory.GetDirectories(physicalPath))
             {
                 var name = Path.GetFileName(directory);
                 var childPath = CombinePath(itemPath, name);
-                items.Add(new FileSystemItem
+                var item = new FileSystemItem
                 {
                     Name = name,
                     Parent = itemPath,
+                    ParentId = parentId,
                     Path = childPath,
                     IsDirectory = true,
-                });
+                };
+                int itemId = await Metadata.Add(item);
 
-                CollectDirectory(directory, childPath, items);
+                await CollectDirectory(directory, childPath, itemId);
             }
 
             foreach (var file in Directory.GetFiles(physicalPath))
             {
                 var name = Path.GetFileName(file);
                 var childPath = CombinePath(itemPath, name);
-                items.Add(new FileSystemItem
+                var item = new FileSystemItem
                 {
                     Name = name,
                     Parent = itemPath,
+                    ParentId = parentId,
                     Path = childPath,
                     IsDirectory = false,
                     Size = (int)new FileInfo(file).Length,
-                });
+                };
+                await Metadata.Add(item);
             }
         }
 
