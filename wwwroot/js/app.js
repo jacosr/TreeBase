@@ -30,6 +30,8 @@
         selectedEntry: null,   // { id, name, isDirectory } for the highlighted row in the list pane
         selectedRow: null,     // the DOM element for the highlighted row
         clipboard: null,       // { id, name, isDirectory, mode: 'copy' | 'cut', sourceParentId }
+        searchMode: false,    // whether the list pane is currently showing search results
+        searchTerm: '',       // the current search term if in search mode
     };
 
     // ----------------------------------------------------------------- API --
@@ -232,7 +234,9 @@
         const root = await apiGet(`/api/search/${ROOT_ID}`);
         const node = createTreeNode(root, null);
         els.tree.appendChild(node.li);
-        await selectTreeNode(node);
+        if (!await useQuerystringState()) {
+            await selectTreeNode(node);
+        }
     }
 
     /** Navigates to the directory at the given path, expanding the tree as needed from the root. */
@@ -304,6 +308,7 @@
         state.selectedRow = row;
         state.selectedEntry = entry;
         updateToolbar();
+        setQuerystringState();
     }
 
     function updateToolbar() {
@@ -321,6 +326,7 @@
         const row = document.createElement('div');
         row.className = 'file-row';
         row.draggable = true;
+        row.dataset.id = String(item.id);
 
         const icon = svgIcon(item.isDirectory ? 'icon-folder' : 'icon-file', 'row-icon');
 
@@ -393,6 +399,7 @@
         if (!node) return;
 
         state.searchMode = false;
+        state.searchTerm = '';
         clearSelection();
         const items = await apiGet(`/api/search/${node.id}/children`);
 
@@ -407,12 +414,14 @@
             empty.className = 'empty-message';
             empty.textContent = 'This folder is empty.';
             els.fileList.appendChild(empty);
+            setQuerystringState();
             return;
         }
 
         for (const item of items) {
             els.fileList.appendChild(await createFileRow(item));
         }
+        setQuerystringState();
     }
 
     /** Reloads the tree children of a folder (if loaded) and the list pane (if it's the current folder). */
@@ -541,6 +550,7 @@
     async function renderSearchResults(term, scopeLabel, items) {
         clearSelection();
         state.searchMode = true;
+        state.searchTerm = term;
         els.fileList.innerHTML = '';
 
         const header = document.createElement('div');
@@ -573,6 +583,7 @@
             const fileCount = item.isDirectory ? await getFileCount(item) : null;
             els.fileList.appendChild(createRow(item, fileCount, { showPath: true }));
         }
+        setQuerystringState();
     }
 
     function copySelection() {
@@ -691,6 +702,62 @@
         if (!state.currentNode) return;
         await refreshFolder(state.currentNode.id);
         setStatus('Refreshed.');
+    }
+
+    // --------------------------------------------------------------- Deep-link --
+
+    function encodeState() {
+        const s = {};
+        if (state.currentNode) s.folderPath = state.currentNode.item.path;
+        if (state.selectedEntry) {
+            s.selectedEntry = {
+                id: state.selectedEntry.id,
+                name: state.selectedEntry.name,
+                isDirectory: state.selectedEntry.isDirectory,
+            };
+        }
+        if (state.searchMode) {
+            s.searchMode = true;
+            s.searchTerm = state.searchTerm;
+        }
+        return encodeURIComponent(JSON.stringify(s));
+    }
+
+    // Uses history.replaceState so the address bar updates without any navigation.
+    function setQuerystringState() {
+        const url = new URL(window.location.href);
+        url.searchParams.set('state', encodeState());
+        history.replaceState(null, '', url.toString());
+    }
+
+    async function useQuerystringState() {
+        const encoded = new URLSearchParams(window.location.search).get('state');
+        if (!encoded) return false;
+
+        let s;
+        try {
+            s = JSON.parse(decodeURIComponent(encoded));
+        } catch {
+            return false;
+        }
+
+        if (s.folderPath) {
+            await navigateToPath(s.folderPath);
+        } else {
+            await selectTreeNode(treeNodes.get(ROOT_ID));
+        }
+
+        if (s.searchMode && s.searchTerm) {
+            els.searchInput.value = s.searchTerm;
+            await search();
+        }
+
+        if (s.selectedEntry) {
+            const row = els.fileList.querySelector(`[data-id="${s.selectedEntry.id}"]`);
+            if (row) selectRow(row, s.selectedEntry);
+        }
+
+        return true;
     }
 
     // ----------------------------------------------------------------- Init --
