@@ -86,6 +86,7 @@ namespace TestProject.Controllers
             {
                 Name = request.Name,
                 Parent = parent.Path,
+                ParentId = parent.Id,
                 Path = path,
                 IsDirectory = request.IsDirectory,
             };
@@ -183,7 +184,7 @@ namespace TestProject.Controllers
                 Size = item.IsDirectory ? null : item.Size,
                 Trigrams = TrigramIndex.GetTrigrams(request.Name).ToArray(),
             };
-            await _metadataStorage.Add(copy);
+            int copyId = await _metadataStorage.Add(copy);
             await _searchEngine.Add(copy);
 
             if (item.IsDirectory)
@@ -195,6 +196,7 @@ namespace TestProject.Controllers
                     {
                         Name = descendant.Name,
                         Parent = descendantCopyParent,
+                        ParentId = copyId,
                         Path = $"{descendantCopyParent}/{descendant.Name}",
                         IsDirectory = descendant.IsDirectory,
                         Size = descendant.IsDirectory ? null : descendant.Size,
