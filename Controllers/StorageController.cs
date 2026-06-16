@@ -95,6 +95,12 @@ namespace TestProject.Controllers
             await _metadataStorage.Add(item);
             await _searchEngine.Add(item);
 
+            if (!item.IsDirectory)
+            {
+                parent.Size += 1;
+                await _metadataStorage.Update(parent);
+            }
+
             return CreatedAtAction("Get", "Search", new { id = item.Id }, item);
         }
 
