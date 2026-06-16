@@ -7,7 +7,8 @@
     const els = {
         tree: document.getElementById('tree'),
         fileList: document.getElementById('file-list'),
-        breadcrumb: document.getElementById('breadcrumb'),
+        breadcrumb: document.getElementById('breadcrumb-path'),
+        listCounts: document.getElementById('list-counts'),
         statusBar: document.getElementById('status-bar'),
         fileInput: document.getElementById('file-input'),
         btnNewFolder: document.getElementById('btn-new-folder'),
@@ -311,6 +312,16 @@
         setQuerystringState();
     }
 
+    function updateListCounts() {
+        const rows = els.fileList.querySelectorAll('.file-row');
+        let folders = 0, files = 0;
+        for (const row of rows) {
+            if (row.dataset.isdir === '1') folders++; else files++;
+        }
+        const f = (n, word) => `${n} ${word}${n !== 1 ? 's' : ''}`;
+        els.listCounts.textContent = `${f(folders, 'folder')}, ${f(files, 'file')}`;
+    }
+
     function updateToolbar() {
         const hasSelection = !!state.selectedEntry;
         els.btnCopy.disabled = !hasSelection;
@@ -327,6 +338,7 @@
         row.className = 'file-row';
         row.draggable = true;
         row.dataset.id = String(item.id);
+        row.dataset.isdir = item.isDirectory ? '1' : '0';
 
         const icon = svgIcon(item.isDirectory ? 'icon-folder' : 'icon-file', 'row-icon');
 
@@ -414,6 +426,7 @@
             empty.className = 'empty-message';
             empty.textContent = 'This folder is empty.';
             els.fileList.appendChild(empty);
+            updateListCounts();
             setQuerystringState();
             return;
         }
@@ -421,6 +434,7 @@
         for (const item of items) {
             els.fileList.appendChild(await createFileRow(item));
         }
+        updateListCounts();
         setQuerystringState();
     }
 
@@ -583,6 +597,7 @@
             const fileCount = item.isDirectory ? await getFileCount(item) : null;
             els.fileList.appendChild(createRow(item, fileCount, { showPath: true }));
         }
+        updateListCounts();
         setQuerystringState();
     }
 

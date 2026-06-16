@@ -1,0 +1,9 @@
+{"Action":"Add","Id":1,"Item":{"Id":1,"Name":"","Size":null,"IsDirectory":true,"Parent":"","ParentId":0,"Path":"/","Trigrams":[]}}
+{"Action":"Add","Id":2,"Item":{"Id":2,"Name":"text1.txt","Size":0,"IsDirectory":false,"Parent":"/","ParentId":1,"Path":"/text1.txt","Trigrams":["tex","ext","xt1","t1.","1.t",".tx","txt"]}}
+{"Action":"Add","Id":3,"Item":{"Id":3,"Name":"text2.txt","Size":0,"IsDirectory":false,"Parent":"/","ParentId":1,"Path":"/text2.txt","Trigrams":["tex","ext","xt2","t2.","2.t",".tx","txt"]}}
+{"Action":"Add","Id":4,"Item":{"Id":4,"Name":"text3.txt","Size":0,"IsDirectory":false,"Parent":"/","ParentId":1,"Path":"/text3.txt","Trigrams":["tex","ext","xt3","t3.","3.t",".tx","txt"]}}
+{"Action":"Add","Id":5,"Item":{"Id":5,"Name":"text4.txt","Size":0,"IsDirectory":false,"Parent":"/","ParentId":1,"Path":"/text4.txt","Trigrams":["tex","ext","xt4","t4.","4.t",".tx","txt"]}}
+{"Action":"Add","Id":6,"Item":{"Id":6,"Name":"text5.txt","Size":0,"IsDirectory":false,"Parent":"/","ParentId":1,"Path":"/text5.txt","Trigrams":["tex","ext","xt5","t5.","5.t",".tx","txt"]}}
+{"Action":"Add","Id":7,"Item":{"Id":7,"Name":"text6.txt","Size":0,"IsDirectory":false,"Parent":"/","ParentId":1,"Path":"/text6.txt","Trigrams":["tex","ext","xt6","t6.","6.t",".tx","txt"]}}
+{"Action":"Add","Id":8,"Item":{"Id":8,"Name":"folder1","Size":null,"IsDirectory":true,"Parent":"/","ParentId":0,"Path":"/folder1","Trigrams":["fol","old","lde","der","er1"]}}
+{"Action":"Update","Id":8,"Item":{"Id":8,"Name":"folder1","Size":0,"IsDirectory":true,"Parent":"/","ParentId":0,"Path":"/folder1","Trigrams":["fol","old","lde","der","er1"]}}

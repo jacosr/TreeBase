@@ -73,12 +73,27 @@ html, body {
 
 /* Breadcrumb */
 #breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 12px;
     padding: 6px 12px;
     background: #fafafa;
     border-bottom: 1px solid #e6e6e6;
     font-size: 13px;
+}
+
+#breadcrumb-path {
+    flex: 1;
+    min-width: 0;
     white-space: nowrap;
     overflow-x: auto;
+}
+
+#list-counts {
+    flex: none;
+    white-space: nowrap;
+    font-size: 12px;
+    color: #666;
 }
 
 #breadcrumb .crumb {
