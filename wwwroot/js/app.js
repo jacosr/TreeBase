@@ -7,7 +7,7 @@
     const els = {
         tree: document.getElementById('tree'),
         fileList: document.getElementById('file-list'),
-        breadcrumb: document.getElementById('breadcrumb-path'),
+        breadcrumb: document.getElementById('breadcrumb'),
         listCounts: document.getElementById('list-counts'),
         statusBar: document.getElementById('status-bar'),
         fileInput: document.getElementById('file-input'),
