@@ -27,12 +27,20 @@ namespace TestProject.Business
         public async Task<IEnumerable<FileSystemItem>> GetChildren(int id)
         {
             var item = await Metadata.Get(id);
-            if (item == null || !item.IsDirectory)
-            {
-                return Enumerable.Empty<FileSystemItem>();
-            }
+            //var prefix = item.Path == FileSystemStorage.RootPath ? FileSystemStorage.RootPath : item.Path + "/";
+            var ids = _pathIndex.GetImmediateChildren(item.Path);
 
-            return Metadata.Items.Where(i => i.Parent == item.Path);
+            List<FileSystemItem> children = new();
+            foreach (var childId in ids)
+            {
+                var child = await Metadata.Get(childId);
+                if (child != null)
+                {
+                    children.Add(child);
+                }
+            }   
+
+            return children;
         }
 
         public Task Add(IFindable item)

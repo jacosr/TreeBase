@@ -99,6 +99,24 @@ namespace TestProject.Business
             }
         }
 
+        /// <summary>
+        /// Returns every identifier whose key begins with the given prefix and has no path separator
+        /// after the prefix, i.e. items that are exactly one level below the prefix directory.
+        /// </summary>
+        public IEnumerable<int> GetImmediateChildren(string prefix)
+        {
+            lock (_lock)
+            {
+                var (node, suffix) = FindNodeByPrefix(_root, prefix);
+                if (node == null)
+                    return Enumerable.Empty<int>();
+
+                var result = new List<int>();
+                CollectImmediate(node, suffix, result);
+                return result;
+            }
+        }
+
         private static Node? FindExact(Node node, string remaining)
         {
             if (remaining.Length == 0)
@@ -146,6 +164,44 @@ namespace TestProject.Business
             {
                 Collect(child, result);
             }
+        }
+
+        private static (Node? node, string suffix) FindNodeByPrefix(Node node, string remaining)
+        {
+            if (remaining.Length == 0)
+                return (node, string.Empty);
+
+            if (!node.Children.TryGetValue(remaining[0], out var child))
+                return (null, string.Empty);
+
+            if (remaining.Length <= child.Label.Length)
+            {
+                if (!child.Label.StartsWith(remaining))
+                    return (null, string.Empty);
+                return (child, child.Label[remaining.Length..]);
+            }
+
+            if (!remaining.StartsWith(child.Label))
+                return (null, string.Empty);
+
+            return FindNodeByPrefix(child, remaining[child.Label.Length..]);
+        }
+
+        private static void CollectImmediate(Node node, string accumulated, List<int> result)
+        {
+            // Strip one leading '/' — it is just the separator between the prefix and the child name.
+            // Any '/' that remains after stripping means we've descended into a sub-directory.
+            var name = accumulated.Length > 0 && accumulated[0] == '/' ? accumulated[1..] : accumulated;
+
+            if (name.Contains('/'))
+                return;
+
+            // Empty name means this node IS the prefix directory itself, not a child of it.
+            if (name.Length > 0)
+                result.AddRange(node.Ids);
+
+            foreach (var child in node.Children.Values)
+                CollectImmediate(child, accumulated + child.Label, result);
         }
 
         private static int CommonPrefixLength(string a, string b)
