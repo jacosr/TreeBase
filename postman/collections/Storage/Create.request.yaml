@@ -1,0 +1,16 @@
+$kind: http-request
+name: Create
+method: POST
+url: "{{baseUrl}}/api/storage"
+description: Creates a new file or directory under the given parent directory.
+order: 2000
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "parentId": 1,
+      "name": "newfile.txt",
+      "isDirectory": false
+    }

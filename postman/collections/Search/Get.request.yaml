@@ -1,0 +1,6 @@
+$kind: http-request
+name: Get
+method: GET
+url: "{{baseUrl}}/api/search/1"
+description: Retrieves the metadata for the item with the given identifier.
+order: 2000

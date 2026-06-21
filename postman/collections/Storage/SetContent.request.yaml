@@ -1,0 +1,15 @@
+$kind: http-request
+name: SetContent
+method: PUT
+url: "{{baseUrl}}/api/storage/23/content"
+description: Replaces the content of the file with the given identifier.
+order: 3000
+body:
+  type: formdata
+  content:
+    - type: file
+      key: file
+      src:
+        - /D:/repos/jacosr/TreeBase/TestData/newfile.txt
+      description: The file to upload.
+      disabled: false

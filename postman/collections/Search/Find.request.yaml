@@ -1,0 +1,9 @@
+$kind: http-request
+name: Find
+method: GET
+url: "{{baseUrl}}/api/search?path=/folder A/&name=A1.tx"
+description: Finds items by path prefix and/or a substring of their name. Either parameter may be omitted; if both are omitted, every item is returned.
+order: 1000
+queryParams:
+  path: /folder A/
+  name: A1.tx

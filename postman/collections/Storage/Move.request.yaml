@@ -1,0 +1,14 @@
+$kind: http-request
+name: Move
+method: PUT
+url: "{{baseUrl}}/api/storage/4/move"
+description: Moves the item with the given identifier to a new parent directory.
+order: 4000
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "parentId": 11
+    }

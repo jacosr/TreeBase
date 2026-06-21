@@ -142,20 +142,22 @@ namespace TestProject.Controllers
 
             await _storage.Move(id, request.ParentId);
 
+            await _searchEngine.Delete(item.Id);
+
             item.Parent = parent.Path;
             item.ParentId = parent.Id;
             item.Path = newPath;
 
             await _metadataStorage.Update(item);
-            await _searchEngine.Delete(item.Id);
             await _searchEngine.Add(item);
 
             foreach (var descendant in descendants)
             {
+                await _searchEngine.Delete(descendant.Id);
+
                 descendant.Parent = descendant.Parent.Replace(oldPath, newPath);
                 descendant.Path = $"{descendant.Parent}/{descendant.Name}";
                 await _metadataStorage.Update(descendant);
-                await _searchEngine.Delete(descendant.Id);
                 await _searchEngine.Add(descendant);
             }
 

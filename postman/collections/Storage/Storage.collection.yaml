@@ -1,0 +1,9 @@
+$kind: collection
+name: Storage
+info:
+  description: 'Exposes the Storage for FileSystemItem as a REST API for managing files and directories.'
+variables:
+  - key: baseUrl
+    value: 'https://localhost:7146'
+  - key: id
+    value: '1'

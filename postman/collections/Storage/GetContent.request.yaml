@@ -1,0 +1,6 @@
+$kind: http-request
+name: GetContent
+method: GET
+url: "{{baseUrl}}/api/storage/15/content"
+description: Downloads the content of the file with the given identifier.
+order: 1000

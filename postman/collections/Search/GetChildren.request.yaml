@@ -1,0 +1,6 @@
+$kind: http-request
+name: GetChildren
+method: GET
+url: "{{baseUrl}}/api/search/1/children"
+description: Retrieves the direct children of the directory with the given identifier.
+order: 3000

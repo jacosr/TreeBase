@@ -1,0 +1,9 @@
+$kind: collection
+name: Search
+info:
+  description: 'Exposes the SearchEngine for FileSystemItem as a REST API.'
+variables:
+  - key: baseUrl
+    value: 'https://localhost:7146'
+  - key: id
+    value: '1'

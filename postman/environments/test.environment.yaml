@@ -1,0 +1,7 @@
+name: test
+values:
+  - key: root
+    value: ''
+    description: the root file folder used in tests
+  - key: baseUrl
+    value: ''

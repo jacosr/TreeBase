@@ -1,0 +1,6 @@
+$kind: http-request
+name: Delete
+method: DELETE
+url: '{{baseUrl}}/api/storage/{{id}}'
+description: 'Deletes the item with the given identifier.'
+order: 6000
