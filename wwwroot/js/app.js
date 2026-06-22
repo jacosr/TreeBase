@@ -177,6 +177,7 @@
         for (const item of directories) {
             const childNode = createTreeNode(item, node);
             node.childrenUl.appendChild(childNode.li);
+            loadChildren(childNode).catch(showError);
         }
 
         node.twisty.classList.toggle('leaf', directories.length === 0);
@@ -542,12 +543,14 @@
         const term = els.searchInput.value.trim();
         if (!term) return;
 
-        let scopePath = null;
-        let scopeLabel = 'entire hierarchy';
-        if (state.selectedEntry && state.selectedEntry.isDirectory) {
-            scopePath = state.selectedEntry.path;
-            scopeLabel = `"${displayName(state.selectedEntry)}"`;
-        }
+        //let scopePath = null;
+        //let scopeLabel = 'entire hierarchy';
+        //if (state.selectedEntry && state.selectedEntry.isDirectory) {
+        //    scopePath = state.selectedEntry.path;
+        //    scopeLabel = `"${displayName(state.selectedEntry)}"`;
+        //}
+        let scopePath = state.currentNode ? state.currentNode.item.path : null;
+        let scopeLabel = state.currentNode ? `"${displayName(state.currentNode.item)}"` : 'entire hierarchy';
 
         try {
             const params = new URLSearchParams({ name: term });
